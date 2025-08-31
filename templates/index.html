@@ -22,11 +22,108 @@
                 </button>
             </div>
             <div class="stock-examples">
-                <p>示例股票代码:</p>
-                <span class="example-code" onclick="setStockCode('600519')">600519 (贵州茅台)</span>
-                <span class="example-code" onclick="setStockCode('000858')">000858 (五粮液)</span>
-                <span class="example-code" onclick="setStockCode('600036')">600036 (招商银行)</span>
-                <span class="example-code" onclick="setStockCode('000001')">000001 (平安银行)</span>
+                <p>热门股票代码 (点击快速选择):</p>
+                <div class="stock-grid">
+                    <!-- 银行股 -->
+                    <div class="stock-category">
+                        <h4>银行</h4>
+                        <span class="example-code" onclick="setStockCode('000001')">000001 平安银行</span>
+                        <span class="example-code" onclick="setStockCode('600036')">600036 招商银行</span>
+                        <span class="example-code" onclick="setStockCode('601166')">601166 兴业银行</span>
+                        <span class="example-code" onclick="setStockCode('000002')">000002 万科A</span>
+                        <span class="example-code" onclick="setStockCode('601328')">601328 交通银行</span>
+                    </div>
+                    
+                    <!-- 白酒食品 -->
+                    <div class="stock-category">
+                        <h4>白酒食品</h4>
+                        <span class="example-code" onclick="setStockCode('600519')">600519 贵州茅台</span>
+                        <span class="example-code" onclick="setStockCode('000858')">000858 五粮液</span>
+                        <span class="example-code" onclick="setStockCode('000596')">000596 古井贡酒</span>
+                        <span class="example-code" onclick="setStockCode('002304')">002304 洋河股份</span>
+                        <span class="example-code" onclick="setStockCode('000799')">000799 酒鬼酒</span>
+                    </div>
+                    
+                    <!-- 科技 -->
+                    <div class="stock-category">
+                        <h4>科技</h4>
+                        <span class="example-code" onclick="setStockCode('000063')">000063 中兴通讯</span>
+                        <span class="example-code" onclick="setStockCode('002415')">002415 海康威视</span>
+                        <span class="example-code" onclick="setStockCode('000725')">000725 京东方A</span>
+                        <span class="example-code" onclick="setStockCode('300059')">300059 东方财富</span>
+                        <span class="example-code" onclick="setStockCode('002230')">002230 科大讯飞</span>
+                    </div>
+                    
+                    <!-- 医药 -->
+                    <div class="stock-category">
+                        <h4>医药</h4>
+                        <span class="example-code" onclick="setStockCode('000661')">000661 长春高新</span>
+                        <span class="example-code" onclick="setStockCode('300015')">300015 爱尔眼科</span>
+                        <span class="example-code" onclick="setStockCode('000423')">000423 东阿阿胶</span>
+                        <span class="example-code" onclick="setStockCode('002821')">002821 凯莱英</span>
+                        <span class="example-code" onclick="setStockCode('300760')">300760 迈瑞医疗</span>
+                    </div>
+                    
+                    <!-- 新能源 -->
+                    <div class="stock-category">
+                        <h4>新能源</h4>
+                        <span class="example-code" onclick="setStockCode('300750')">300750 宁德时代</span>
+                        <span class="example-code" onclick="setStockCode('002594')">002594 比亚迪</span>
+                        <span class="example-code" onclick="setStockCode('688981')">688981 中芯国际</span>
+                        <span class="example-code" onclick="setStockCode('300124')">300124 汇川技术</span>
+                        <span class="example-code" onclick="setStockCode('002709')">002709 天赐材料</span>
+                    </div>
+                    
+                    <!-- 消费 -->
+                    <div class="stock-category">
+                        <h4>消费</h4>
+                        <span class="example-code" onclick="setStockCode('000895')">000895 双汇发展</span>
+                        <span class="example-code" onclick="setStockCode('600887')">600887 伊利股份</span>
+                        <span class="example-code" onclick="setStockCode('000568')">000568 泸州老窖</span>
+                        <span class="example-code" onclick="setStockCode('002032')">002032 苏泊尔</span>
+                        <span class="example-code" onclick="setStockCode('600600')">600600 青岛啤酒</span>
+                    </div>
+                    
+                    <!-- 房地产建材 -->
+                    <div class="stock-category">
+                        <h4>地产建材</h4>
+                        <span class="example-code" onclick="setStockCode('000002')">000002 万科A</span>
+                        <span class="example-code" onclick="setStockCode('000069')">000069 华侨城A</span>
+                        <span class="example-code" onclick="setStockCode('600048')">600048 保利发展</span>
+                        <span class="example-code" onclick="setStockCode('000951')">000951 中国重汽</span>
+                        <span class="example-code" onclick="setStockCode('000739')">000739 普洛药业</span>
+                    </div>
+                    
+                    <!-- 券商保险 -->
+                    <div class="stock-category">
+                        <h4>券商保险</h4>
+                        <span class="example-code" onclick="setStockCode('600030')">600030 中信证券</span>
+                        <span class="example-code" onclick="setStockCode('000783')">000783 长江证券</span>
+                        <span class="example-code" onclick="setStockCode('601318')">601318 中国平安</span>
+                        <span class="example-code" onclick="setStockCode('601601')">601601 中国太保</span>
+                        <span class="example-code" onclick="setStockCode('000776')">000776 广发证券</span>
+                    </div>
+                    
+                    <!-- 基建能源 -->
+                    <div class="stock-category">
+                        <h4>基建能源</h4>
+                        <span class="example-code" onclick="setStockCode('601668')">601668 中国建筑</span>
+                        <span class="example-code" onclick="setStockCode('600346')">600346 恒力石化</span>
+                        <span class="example-code" onclick="setStockCode('000968')">000968 蓝焰控股</span>
+                        <span class="example-code" onclick="setStockCode('600188')">600188 兖矿能源</span>
+                        <span class="example-code" onclick="setStockCode('600028')">600028 中国石化</span>
+                    </div>
+                    
+                    <!-- 其他热门 -->
+                    <div class="stock-category">
+                        <h4>其他热门</h4>
+                        <span class="example-code" onclick="setStockCode('300142')">300142 沃森生物</span>
+                        <span class="example-code" onclick="setStockCode('002241')">002241 歌尔股份</span>
+                        <span class="example-code" onclick="setStockCode('000100')">000100 TCL科技</span>
+                        <span class="example-code" onclick="setStockCode('600104')">600104 上汽集团</span>
+                        <span class="example-code" onclick="setStockCode('600276')">600276 恒瑞医药</span>
+                    </div>
+                </div>
             </div>
         </div>
 

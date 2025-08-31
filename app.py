@@ -22,6 +22,8 @@ class WebStockAnalyzer:
     
     def __init__(self):
         self.analyzer = StockFinancialAnalyzer()
+        self.prefetched_data = {}
+        self._prefetch_popular_stocks()
     
     def get_stock_data(self, stock_code):
         """
@@ -33,6 +35,11 @@ class WebStockAnalyzer:
         Returns:
             dict: Formatted data for web display
         """
+        # Check if data is already cached
+        if stock_code in self.prefetched_data:
+            logger.info(f"Returning cached data for {stock_code}")
+            return self.prefetched_data[stock_code]
+        
         try:
             # Get financial data
             financial_data = self.analyzer.get_comprehensive_financial_data(stock_code)
@@ -140,6 +147,30 @@ class WebStockAnalyzer:
             })
         
         return summary
+    
+    def _prefetch_popular_stocks(self):
+        """Pre-fetch data for popular stocks to improve user experience."""
+        popular_stocks = ["000951", "000739"]  # Add more as needed
+        
+        logger.info("Starting pre-fetch for popular stocks...")
+        
+        for stock_code in popular_stocks:
+            try:
+                logger.info(f"Pre-fetching data for {stock_code}...")
+                data = self.get_stock_data(stock_code)
+                if "error" not in data:
+                    self.prefetched_data[stock_code] = data
+                    logger.info(f"Successfully pre-fetched data for {stock_code}")
+                else:
+                    logger.warning(f"Failed to pre-fetch data for {stock_code}: {data.get('error')}")
+            except Exception as e:
+                logger.error(f"Error pre-fetching {stock_code}: {str(e)}")
+        
+        logger.info(f"Pre-fetch completed. Cached {len(self.prefetched_data)} stocks.")
+    
+    def get_prefetched_data(self):
+        """Get all pre-fetched stock data."""
+        return self.prefetched_data
 
 # Initialize the analyzer
 web_analyzer = WebStockAnalyzer()
@@ -171,6 +202,15 @@ def analyze_stock():
         logger.error(f"Error in analyze_stock: {str(e)}")
         logger.error(traceback.format_exc())
         return jsonify({"error": "服务器内部错误"}), 500
+
+@app.route('/prefetched')
+def get_prefetched_data():
+    """Get pre-fetched stock data."""
+    try:
+        return jsonify(web_analyzer.get_prefetched_data())
+    except Exception as e:
+        logger.error(f"Error getting pre-fetched data: {str(e)}")
+        return jsonify({"error": "获取预加载数据失败"}), 500
 
 @app.route('/health')
 def health_check():

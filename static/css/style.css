@@ -97,27 +97,58 @@ body {
 .stock-examples {
     color: #666;
     font-size: 0.9rem;
+    text-align: left;
 }
 
-.stock-examples p {
-    margin-bottom: 10px;
+.stock-examples > p {
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+}
+
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.stock-category {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.stock-category h4 {
+    margin: 0 0 10px 0;
+    color: #495057;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #667eea;
 }
 
 .example-code {
     display: inline-block;
-    background: #f8f9fa;
-    padding: 8px 15px;
-    margin: 5px;
-    border-radius: 20px;
+    background: white;
+    padding: 6px 12px;
+    margin: 3px;
+    border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid #e9ecef;
+    font-size: 0.8rem;
+    white-space: nowrap;
 }
 
 .example-code:hover {
     background: #667eea;
     color: white;
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Loading */
@@ -286,6 +317,24 @@ body {
     font-style: italic;
 }
 
+/* Pre-fetch note */
+.prefetch-note {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    color: #1565c0;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #bbdefb;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.prefetch-note i {
+    margin-right: 8px;
+    color: #1976d2;
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -330,6 +379,21 @@ body {
     
     .summary-details {
         grid-template-columns: 1fr;
+    }
+    
+    .stock-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .stock-category {
+        padding: 10px;
+    }
+    
+    .example-code {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        margin: 2px;
     }
 }
 

@@ -22,12 +22,49 @@ document.addEventListener('DOMContentLoaded', function() {
     stockCodeInput.addEventListener('input', function(e) {
         e.target.value = e.target.value.replace(/[^0-9]/g, '');
     });
+    
+    // Load pre-fetched data on page load
+    loadPrefetchedData();
 });
 
 // Set stock code from examples
 function setStockCode(code) {
     stockCodeInput.value = code;
     stockCodeInput.focus();
+}
+
+// Load pre-fetched data
+async function loadPrefetchedData() {
+    try {
+        const response = await fetch('/prefetched');
+        const prefetchedData = await response.json();
+        
+        if (Object.keys(prefetchedData).length > 0) {
+            // Find a stock with data to display
+            const stockCode = Object.keys(prefetchedData)[0];
+            const data = prefetchedData[stockCode];
+            
+            // Set the stock code in the input
+            stockCodeInput.value = stockCode;
+            
+            // Display the pre-fetched data
+            displayResults(data);
+            
+            // Add a note about pre-loaded data
+            const noteElement = document.createElement('div');
+            noteElement.className = 'prefetch-note';
+            noteElement.innerHTML = `
+                <i class="fas fa-info-circle"></i> 
+                已为您预加载 ${stockCode} 的数据，您也可以输入其他股票代码查询
+            `;
+            
+            // Insert note before results
+            results.parentNode.insertBefore(noteElement, results);
+        }
+    } catch (error) {
+        console.log('Pre-fetched data not available:', error);
+        // Silently fail - this is not critical
+    }
 }
 
 // Main analysis function

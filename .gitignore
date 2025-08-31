@@ -59,3 +59,9 @@ instance/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# GitHub credentials (NEVER commit these!)
+.github-credentials
+.git-credentials
+github-config.txt
+credentials.txt

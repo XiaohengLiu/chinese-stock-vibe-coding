@@ -215,6 +215,54 @@ body {
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
+.example-code.starred-stock-example {
+    background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+    color: #8b4513;
+    border: 2px solid #ffd700;
+    font-weight: 600;
+    position: relative;
+}
+
+.example-code.starred-stock-example:hover {
+    background: linear-gradient(135deg, #ffed4e 0%, #ffc947 100%);
+    color: #8b4513;
+    border-color: #ffc107;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.example-code .star-icon {
+    color: #ffd700;
+    margin-right: 4px;
+    font-size: 0.7rem;
+}
+
+.example-code.starred-stock-example .star-icon {
+    color: #8b4513;
+}
+
+.example-code.current-stock-example {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 2px solid #667eea;
+    font-weight: 600;
+    position: relative;
+}
+
+.example-code.current-stock-example:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4c93 100%);
+    color: white;
+    border-color: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.example-code .current-icon {
+    color: white;
+    margin-right: 4px;
+    font-size: 0.7rem;
+}
+
 /* Loading */
 .loading {
     text-align: center;

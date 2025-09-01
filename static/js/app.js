@@ -42,15 +42,21 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = e.target.value.replace(/[^0-9]/g, '');
     });
     
-    // Load pre-fetched data on page load
-    loadPrefetchedData();
-    
     // Initialize navigation
     initNavigation();
     
-    // Initialize starred stocks from database
-    loadStarredStocks();
+    // Initialize starred stocks from database first, then load pre-fetched data
+    initializeAppData();
 });
+
+// Initialize app data in correct order
+async function initializeAppData() {
+    // Load starred stocks first
+    await loadStarredStocks();
+    
+    // Then load and display pre-fetched data
+    await loadPrefetchedData();
+}
 
 // Set stock code from examples
 function setStockCode(code) {
@@ -178,6 +184,9 @@ function displayResults(data) {
     
     // Show results
     results.classList.remove('hidden');
+    
+    // Update highlighting to show current stock
+    highlightStarredStocksInGrid();
     
     // Smooth scroll to results
     results.scrollIntoView({ behavior: 'smooth' });
@@ -449,6 +458,7 @@ async function loadStarredStocks() {
             starredStocks = data.starred_stocks || [];
             updateStarredCount();
             renderStarredStocks();
+            highlightStarredStocksInGrid();
         } else {
             console.error('Error loading starred stocks:', data.error);
         }
@@ -458,6 +468,7 @@ async function loadStarredStocks() {
         starredStocks = JSON.parse(localStorage.getItem('starredStocks') || '[]');
         updateStarredCount();
         renderStarredStocks();
+        highlightStarredStocksInGrid();
     }
 }
 
@@ -641,6 +652,61 @@ function updateStarButtons() {
     if (starBtn && starBtn.dataset.stockCode) {
         updateStarButton(starBtn.dataset.stockCode);
     }
+    
+    // Update highlighting in stock grid
+    highlightStarredStocksInGrid();
+}
+
+function highlightStarredStocksInGrid() {
+    // Get all example stock code elements
+    const stockElements = document.querySelectorAll('.example-code');
+    const currentStockCode = stockCodeInput.value.trim();
+    
+    stockElements.forEach(element => {
+        // Extract stock code from onclick attribute
+        const onclickAttr = element.getAttribute('onclick');
+        if (onclickAttr) {
+            const match = onclickAttr.match(/setStockCode\('(\d+)'\)/);
+            if (match) {
+                const stockCode = match[1];
+                
+                // Remove existing classes first
+                element.classList.remove('starred-stock-example', 'current-stock-example');
+                
+                // Remove existing icons
+                const existingIcon = element.querySelector('.star-icon, .current-icon');
+                if (existingIcon) {
+                    existingIcon.remove();
+                    // Remove the space before the icon
+                    if (element.firstChild && element.firstChild.nodeType === Node.TEXT_NODE && element.firstChild.textContent === ' ') {
+                        element.firstChild.remove();
+                    }
+                }
+                
+                // Check if this is the current stock being viewed
+                if (stockCode === currentStockCode && results && !results.classList.contains('hidden')) {
+                    element.classList.add('current-stock-example');
+                    const currentIcon = document.createElement('i');
+                    currentIcon.className = 'fas fa-eye current-icon';
+                    element.prepend(currentIcon);
+                    element.prepend(document.createTextNode(' '));
+                }
+                // Check if this stock is starred
+                else if (isStarred(stockCode)) {
+                    element.classList.add('starred-stock-example');
+                    const starIcon = document.createElement('i');
+                    starIcon.className = 'fas fa-star star-icon';
+                    element.prepend(starIcon);
+                    element.prepend(document.createTextNode(' '));
+                }
+            }
+        }
+    });
+}
+
+// Call highlight function when stock code input changes
+function updateHighlighting() {
+    highlightStarredStocksInGrid();
 }
 
 // Utility functions

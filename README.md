@@ -48,6 +48,36 @@ python run_webapp.py
 
 Then open your browser and visit: http://localhost:8080
 
+**🆕 Web App Features:**
+- **搜索分析**: Stock financial data analysis with interactive tables
+- **财经新闻**: Real-time financial news and market updates  
+- **关注股票**: Personal starred stocks with database persistence
+- **响应式界面**: Mobile-friendly design with modern UI
+
+### Database Management
+
+The app includes a SQLite database for storing user starred stocks:
+
+```bash
+# List all starred stocks
+python manage_database.py list
+
+# Add a starred stock
+python manage_database.py add 600519 "贵州茅台"
+
+# Remove a starred stock
+python manage_database.py remove 600519
+
+# Clear all starred stocks
+python manage_database.py clear
+
+# Backup database
+python manage_database.py backup
+
+# Initialize database
+python manage_database.py init
+```
+
 ### Command Line Usage
 
 For direct command-line access:

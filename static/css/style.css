@@ -647,6 +647,22 @@ body {
     background: #218838;
 }
 
+.star-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.star-btn:disabled:hover {
+    background: #ffc107;
+    transform: none;
+}
+
+.star-btn.starred:disabled:hover {
+    background: #28a745;
+    transform: none;
+}
+
 /* Footer */
 .footer {
     text-align: center;

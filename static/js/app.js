@@ -192,24 +192,42 @@ function addStarButton(stockCode) {
     
     // Create star button
     const starBtn = document.createElement('button');
+    starBtn.id = 'starButton';
+    starBtn.dataset.stockCode = stockCode;
     starBtn.className = `star-btn ${isStarred(stockCode) ? 'starred' : ''}`;
     starBtn.innerHTML = `
         <i class="fas fa-star"></i> 
         ${isStarred(stockCode) ? '已关注' : '关注'}
     `;
-    starBtn.onclick = () => {
-        toggleStar(stockCode, getStockName(stockCode));
-        starBtn.className = `star-btn ${isStarred(stockCode) ? 'starred' : ''}`;
-        starBtn.innerHTML = `
-            <i class="fas fa-star"></i> 
-            ${isStarred(stockCode) ? '已关注' : '关注'}
-        `;
+    starBtn.onclick = async () => {
+        // Show loading state
+        starBtn.disabled = true;
+        starBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+        
+        // Toggle star in database
+        await toggleStar(stockCode, getStockName(stockCode));
+        
+        // Re-enable button and update state
+        starBtn.disabled = false;
+        updateStarButton(stockCode);
     };
     
     // Add to summary section
     const summarySection = document.querySelector('.summary-section h2');
     if (summarySection) {
         summarySection.appendChild(starBtn);
+    }
+}
+
+function updateStarButton(stockCode) {
+    const starBtn = document.getElementById('starButton');
+    if (starBtn) {
+        const starred = isStarred(stockCode);
+        starBtn.className = `star-btn ${starred ? 'starred' : ''}`;
+        starBtn.innerHTML = `
+            <i class="fas fa-star"></i> 
+            ${starred ? '已关注' : '关注'}
+        `;
     }
 }
 
@@ -527,15 +545,25 @@ async function clearAllStarredStocks() {
 async function toggleStar(stockCode, stockName) {
     const isCurrentlyStarred = isStarred(stockCode);
     
-    if (isCurrentlyStarred) {
-        // Remove from starred
-        await removeStarredStock(stockCode);
-    } else {
-        // Add to starred
-        await addStarredStock(stockCode, stockName);
+    try {
+        if (isCurrentlyStarred) {
+            // Remove from starred
+            const success = await removeStarredStock(stockCode);
+            if (success) {
+                console.log(`Successfully removed ${stockCode} from starred list`);
+            }
+        } else {
+            // Add to starred
+            const success = await addStarredStock(stockCode, stockName);
+            if (success) {
+                console.log(`Successfully added ${stockCode} to starred list`);
+            }
+        }
+    } catch (error) {
+        console.error('Error toggling star:', error);
     }
     
-    // Update UI
+    // Update UI - this will happen after the database is updated
     updateStarButtons();
 }
 
@@ -608,8 +636,11 @@ function getStockName(stockCode) {
 }
 
 function updateStarButtons() {
-    // This would update star buttons in the search results
-    // Implementation depends on how results are displayed
+    // Update star button in search results if visible
+    const starBtn = document.getElementById('starButton');
+    if (starBtn && starBtn.dataset.stockCode) {
+        updateStarButton(starBtn.dataset.stockCode);
+    }
 }
 
 // Utility functions

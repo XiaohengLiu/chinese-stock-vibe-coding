@@ -23,8 +23,11 @@ const newsError = document.getElementById('newsError');
 const starredContent = document.getElementById('starredContent');
 const starredCount = document.getElementById('starredCount');
 
-// Local Storage for starred stocks
-let starredStocks = JSON.parse(localStorage.getItem('starredStocks')) || [];
+// User ID for database operations (in a real app, this would come from authentication)
+const USER_ID = 'default_user';
+
+// In-memory cache for starred stocks (synced with database)
+let starredStocks = [];
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
@@ -45,9 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize navigation
     initNavigation();
     
-    // Initialize starred stocks
-    updateStarredCount();
-    renderStarredStocks();
+    // Initialize starred stocks from database
+    loadStarredStocks();
 });
 
 // Set stock code from examples
@@ -419,28 +421,121 @@ function showNewsError(message) {
     newsError.classList.remove('hidden');
 }
 
+// Database API Functions
+async function loadStarredStocks() {
+    try {
+        const response = await fetch(`/starred?user_id=${USER_ID}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+            starredStocks = data.starred_stocks || [];
+            updateStarredCount();
+            renderStarredStocks();
+        } else {
+            console.error('Error loading starred stocks:', data.error);
+        }
+    } catch (error) {
+        console.error('Error loading starred stocks:', error);
+        // Fallback to localStorage for offline mode
+        starredStocks = JSON.parse(localStorage.getItem('starredStocks') || '[]');
+        updateStarredCount();
+        renderStarredStocks();
+    }
+}
+
+async function addStarredStock(stockCode, stockName) {
+    try {
+        const response = await fetch('/starred', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                stock_code: stockCode,
+                stock_name: stockName || getStockName(stockCode),
+                user_id: USER_ID
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Reload starred stocks from server
+            await loadStarredStocks();
+            return true;
+        } else {
+            console.error('Error adding starred stock:', data.error);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error adding starred stock:', error);
+        return false;
+    }
+}
+
+async function removeStarredStock(stockCode) {
+    try {
+        const response = await fetch(`/starred/${stockCode}?user_id=${USER_ID}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Reload starred stocks from server
+            await loadStarredStocks();
+            return true;
+        } else {
+            console.error('Error removing starred stock:', data.error);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error removing starred stock:', error);
+        return false;
+    }
+}
+
+async function clearAllStarredStocks() {
+    try {
+        const response = await fetch('/starred/clear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: USER_ID
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Reload starred stocks from server
+            await loadStarredStocks();
+            return true;
+        } else {
+            console.error('Error clearing starred stocks:', data.error);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error clearing starred stocks:', error);
+        return false;
+    }
+}
+
 // Starred Stocks Functions
-function toggleStar(stockCode, stockName) {
-    const index = starredStocks.findIndex(stock => stock.code === stockCode);
+async function toggleStar(stockCode, stockName) {
+    const isCurrentlyStarred = isStarred(stockCode);
     
-    if (index > -1) {
+    if (isCurrentlyStarred) {
         // Remove from starred
-        starredStocks.splice(index, 1);
+        await removeStarredStock(stockCode);
     } else {
         // Add to starred
-        starredStocks.push({
-            code: stockCode,
-            name: stockName || getStockName(stockCode),
-            addedAt: new Date().toISOString()
-        });
+        await addStarredStock(stockCode, stockName);
     }
     
-    // Save to localStorage
-    localStorage.setItem('starredStocks', JSON.stringify(starredStocks));
-    
     // Update UI
-    updateStarredCount();
-    renderStarredStocks();
     updateStarButtons();
 }
 
@@ -491,13 +586,9 @@ function analyzeStarredStock(stockCode) {
     analyzeStock();
 }
 
-function clearAllStarred() {
+async function clearAllStarred() {
     if (confirm('确定要清空所有关注的股票吗？')) {
-        starredStocks = [];
-        localStorage.setItem('starredStocks', JSON.stringify(starredStocks));
-        updateStarredCount();
-        renderStarredStocks();
-        updateStarButtons();
+        await clearAllStarredStocks();
     }
 }
 

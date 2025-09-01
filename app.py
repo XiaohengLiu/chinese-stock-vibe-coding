@@ -7,6 +7,7 @@ from flask import Flask, render_template, request, jsonify, flash
 import pandas as pd
 import json
 from stock_financial_data import StockFinancialAnalyzer
+from database import db_manager
 import logging
 import traceback
 
@@ -172,7 +173,14 @@ class WebStockAnalyzer:
         """Get all pre-fetched stock data."""
         return self.prefetched_data
 
-# Initialize the analyzer
+# Initialize the analyzer and database
+try:
+    logger.info("Initializing database...")
+    db_manager.init_database()
+    logger.info("Database initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize database: {str(e)}")
+    
 web_analyzer = WebStockAnalyzer()
 
 @app.route('/')
@@ -211,6 +219,104 @@ def get_prefetched_data():
     except Exception as e:
         logger.error(f"Error getting pre-fetched data: {str(e)}")
         return jsonify({"error": "获取预加载数据失败"}), 500
+
+@app.route('/starred', methods=['GET'])
+def get_starred_stocks():
+    """Get all starred stocks for the user."""
+    try:
+        user_id = request.args.get('user_id', 'default_user')
+        starred_stocks = db_manager.get_starred_stocks(user_id)
+        return jsonify({
+            "starred_stocks": starred_stocks,
+            "count": len(starred_stocks)
+        })
+    except Exception as e:
+        logger.error(f"Error getting starred stocks: {str(e)}")
+        return jsonify({"error": "获取关注股票失败"}), 500
+
+@app.route('/starred', methods=['POST'])
+def add_starred_stock():
+    """Add a stock to starred list."""
+    try:
+        data = request.get_json()
+        stock_code = data.get('stock_code')
+        stock_name = data.get('stock_name', '')
+        user_id = data.get('user_id', 'default_user')
+        
+        if not stock_code:
+            return jsonify({"error": "股票代码不能为空"}), 400
+        
+        success = db_manager.add_starred_stock(stock_code, stock_name, user_id)
+        
+        if success:
+            return jsonify({
+                "message": "关注成功",
+                "stock_code": stock_code,
+                "count": db_manager.get_starred_count(user_id)
+            })
+        else:
+            return jsonify({"message": "股票已在关注列表中"}), 200
+            
+    except Exception as e:
+        logger.error(f"Error adding starred stock: {str(e)}")
+        return jsonify({"error": "添加关注失败"}), 500
+
+@app.route('/starred/<stock_code>', methods=['DELETE'])
+def remove_starred_stock(stock_code):
+    """Remove a stock from starred list."""
+    try:
+        user_id = request.args.get('user_id', 'default_user')
+        success = db_manager.remove_starred_stock(stock_code, user_id)
+        
+        if success:
+            return jsonify({
+                "message": "取消关注成功",
+                "stock_code": stock_code,
+                "count": db_manager.get_starred_count(user_id)
+            })
+        else:
+            return jsonify({"message": "股票不在关注列表中"}), 404
+            
+    except Exception as e:
+        logger.error(f"Error removing starred stock: {str(e)}")
+        return jsonify({"error": "取消关注失败"}), 500
+
+@app.route('/starred/clear', methods=['POST'])
+def clear_all_starred():
+    """Clear all starred stocks for the user."""
+    try:
+        data = request.get_json() or {}
+        user_id = data.get('user_id', 'default_user')
+        
+        success = db_manager.clear_all_starred(user_id)
+        
+        if success:
+            return jsonify({
+                "message": "清空成功",
+                "count": 0
+            })
+        else:
+            return jsonify({"error": "清空失败"}), 500
+            
+    except Exception as e:
+        logger.error(f"Error clearing starred stocks: {str(e)}")
+        return jsonify({"error": "清空失败"}), 500
+
+@app.route('/starred/check/<stock_code>', methods=['GET'])
+def check_starred_stock(stock_code):
+    """Check if a stock is starred."""
+    try:
+        user_id = request.args.get('user_id', 'default_user')
+        is_starred = db_manager.is_stock_starred(stock_code, user_id)
+        
+        return jsonify({
+            "stock_code": stock_code,
+            "is_starred": is_starred
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking starred stock: {str(e)}")
+        return jsonify({"error": "检查失败"}), 500
 
 @app.route('/health')
 def health_check():

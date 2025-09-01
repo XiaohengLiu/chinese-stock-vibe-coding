@@ -65,3 +65,9 @@ instance/
 .git-credentials
 github-config.txt
 credentials.txt
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+stocks_backup_*.db

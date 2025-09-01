@@ -37,6 +37,70 @@ body {
     opacity: 0.9;
 }
 
+/* Navigation */
+.navigation {
+    margin-bottom: 30px;
+}
+
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.nav-tab {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.nav-tab:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+.nav-tab.active {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.starred-count {
+    background: #ff6b6b;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    margin-left: 5px;
+    min-width: 18px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Tab Content */
+.tab-content {
+    min-height: 400px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
 /* Input section */
 .input-section {
     background: white;
@@ -335,6 +399,254 @@ body {
     color: #1976d2;
 }
 
+/* News Section */
+.news-section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.news-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.news-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.refresh-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.refresh-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-1px);
+}
+
+.news-content {
+    padding: 30px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.news-placeholder {
+    text-align: center;
+    color: #6c757d;
+    padding: 40px 20px;
+}
+
+.news-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.news-item {
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 0;
+    transition: all 0.3s ease;
+}
+
+.news-item:last-child {
+    border-bottom: none;
+}
+
+.news-item:hover {
+    background: #f8f9fa;
+    margin: 0 -15px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.news-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.news-summary {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Starred Stocks Section */
+.starred-section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.starred-header {
+    background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+    color: #8b4513;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.starred-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.clear-all-btn {
+    background: rgba(139,69,19,0.2);
+    color: #8b4513;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.clear-all-btn:hover {
+    background: rgba(139,69,19,0.3);
+    transform: translateY(-1px);
+}
+
+.starred-content {
+    padding: 30px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.starred-placeholder {
+    text-align: center;
+    color: #6c757d;
+    padding: 40px 20px;
+}
+
+.starred-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.starred-placeholder .hint {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.starred-stock {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.starred-stock:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stock-info {
+    flex: 1;
+}
+
+.stock-code {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.stock-name {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.stock-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.action-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+}
+
+.unstar-btn {
+    background: #dc3545;
+}
+
+.unstar-btn:hover {
+    background: #c82333;
+}
+
+/* Star Button in Results */
+.star-btn {
+    background: #ffc107;
+    color: #212529;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    margin-left: 15px;
+    font-weight: 500;
+}
+
+.star-btn:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+.star-btn.starred {
+    background: #28a745;
+    color: white;
+}
+
+.star-btn.starred:hover {
+    background: #218838;
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -394,6 +706,21 @@ body {
         font-size: 0.7rem;
         padding: 4px 8px;
         margin: 2px;
+    }
+    
+    .nav-tabs {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .nav-tab {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .starred-count {
+        font-size: 0.6rem;
+        padding: 1px 4px;
     }
 }
 

@@ -14,7 +14,27 @@
             <p>输入股票代码，获取近10年财务数据分析</p>
         </header>
 
-        <div class="input-section">
+        <!-- Navigation Tabs -->
+        <nav class="navigation">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="search">
+                    <i class="fas fa-search"></i> 搜索分析
+                </button>
+                <button class="nav-tab" data-tab="news">
+                    <i class="fas fa-newspaper"></i> 财经新闻
+                </button>
+                <button class="nav-tab" data-tab="starred">
+                    <i class="fas fa-star"></i> 关注股票
+                    <span class="starred-count" id="starredCount">0</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Tab Content Container -->
+        <div class="tab-content">
+            <!-- Search Tab -->
+            <div class="tab-panel active" id="searchPanel">
+                <div class="input-section">
             <div class="input-container">
                 <input type="text" id="stockCode" placeholder="请输入股票代码 (例如: 600519)" maxlength="6">
                 <button id="analyzeBtn" onclick="analyzeStock()">
@@ -127,28 +147,72 @@
             </div>
         </div>
 
-        <div id="loading" class="loading hidden">
-            <div class="spinner"></div>
-            <p>正在获取数据，请稍候...</p>
-        </div>
-
-        <div id="error" class="error-message hidden"></div>
-
-        <div id="results" class="results hidden">
-            <div class="summary-section">
-                <h2><i class="fas fa-info-circle"></i> 数据汇总</h2>
-                <div id="summaryTable" class="summary-table"></div>
-            </div>
-
-            <div class="tables-container">
-                <div class="table-section">
-                    <h2><i class="fas fa-calendar-alt"></i> 年度财务数据</h2>
-                    <div id="annualTable" class="data-table-container"></div>
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>正在获取数据，请稍候...</p>
                 </div>
 
-                <div class="table-section">
-                    <h2><i class="fas fa-calendar"></i> 半年度财务数据</h2>
-                    <div id="halfyearTable" class="data-table-container"></div>
+                <div id="error" class="error-message hidden"></div>
+
+                <div id="results" class="results hidden">
+                    <div class="summary-section">
+                        <h2><i class="fas fa-info-circle"></i> 数据汇总</h2>
+                        <div id="summaryTable" class="summary-table"></div>
+                    </div>
+
+                    <div class="tables-container">
+                        <div class="table-section">
+                            <h2><i class="fas fa-calendar-alt"></i> 年度财务数据</h2>
+                            <div id="annualTable" class="data-table-container"></div>
+                        </div>
+
+                        <div class="table-section">
+                            <h2><i class="fas fa-calendar"></i> 半年度财务数据</h2>
+                            <div id="halfyearTable" class="data-table-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Tab -->
+            <div class="tab-panel" id="newsPanel">
+                <div class="news-section">
+                    <div class="news-header">
+                        <h2><i class="fas fa-newspaper"></i> 今日财经新闻</h2>
+                        <button class="refresh-btn" onclick="refreshNews()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                    </div>
+                    <div id="newsLoading" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>正在获取最新新闻...</p>
+                    </div>
+                    <div id="newsError" class="error-message hidden"></div>
+                    <div id="newsContent" class="news-content">
+                        <div class="news-placeholder">
+                            <i class="fas fa-newspaper"></i>
+                            <p>点击刷新获取最新财经新闻</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Starred Stocks Tab -->
+            <div class="tab-panel" id="starredPanel">
+                <div class="starred-section">
+                    <div class="starred-header">
+                        <h2><i class="fas fa-star"></i> 我的关注股票</h2>
+                        <button class="clear-all-btn" onclick="clearAllStarred()">
+                            <i class="fas fa-trash"></i> 清空全部
+                        </button>
+                    </div>
+                    <div id="starredContent" class="starred-content">
+                        <div class="starred-placeholder">
+                            <i class="fas fa-star-o"></i>
+                            <p>暂无关注的股票</p>
+                            <p class="hint">在搜索结果中点击星标按钮来关注股票</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

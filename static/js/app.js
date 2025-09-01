@@ -10,6 +10,22 @@ const summaryTable = document.getElementById('summaryTable');
 const annualTable = document.getElementById('annualTable');
 const halfyearTable = document.getElementById('halfyearTable');
 
+// Navigation Elements
+const navTabs = document.querySelectorAll('.nav-tab');
+const tabPanels = document.querySelectorAll('.tab-panel');
+
+// News Elements
+const newsContent = document.getElementById('newsContent');
+const newsLoading = document.getElementById('newsLoading');
+const newsError = document.getElementById('newsError');
+
+// Starred Elements
+const starredContent = document.getElementById('starredContent');
+const starredCount = document.getElementById('starredCount');
+
+// Local Storage for starred stocks
+let starredStocks = JSON.parse(localStorage.getItem('starredStocks')) || [];
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     stockCodeInput.addEventListener('keypress', function(e) {
@@ -25,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load pre-fetched data on page load
     loadPrefetchedData();
+    
+    // Initialize navigation
+    initNavigation();
+    
+    // Initialize starred stocks
+    updateStarredCount();
+    renderStarredStocks();
 });
 
 // Set stock code from examples
@@ -139,6 +162,9 @@ function hideResults() {
 }
 
 function displayResults(data) {
+    // Add star button to summary section
+    addStarButton(data.stock_code);
+    
     // Display summary
     displaySummary(data.summary);
     
@@ -153,6 +179,36 @@ function displayResults(data) {
     
     // Smooth scroll to results
     results.scrollIntoView({ behavior: 'smooth' });
+}
+
+function addStarButton(stockCode) {
+    // Remove existing star button
+    const existingBtn = document.querySelector('.star-btn');
+    if (existingBtn) {
+        existingBtn.remove();
+    }
+    
+    // Create star button
+    const starBtn = document.createElement('button');
+    starBtn.className = `star-btn ${isStarred(stockCode) ? 'starred' : ''}`;
+    starBtn.innerHTML = `
+        <i class="fas fa-star"></i> 
+        ${isStarred(stockCode) ? '已关注' : '关注'}
+    `;
+    starBtn.onclick = () => {
+        toggleStar(stockCode, getStockName(stockCode));
+        starBtn.className = `star-btn ${isStarred(stockCode) ? 'starred' : ''}`;
+        starBtn.innerHTML = `
+            <i class="fas fa-star"></i> 
+            ${isStarred(stockCode) ? '已关注' : '关注'}
+        `;
+    };
+    
+    // Add to summary section
+    const summarySection = document.querySelector('.summary-section h2');
+    if (summarySection) {
+        summarySection.appendChild(starBtn);
+    }
 }
 
 function displaySummary(summaryData) {
@@ -241,6 +297,228 @@ function getGrowthClass(value) {
     } else {
         return 'growth-neutral';
     }
+}
+
+// Navigation Functions
+function initNavigation() {
+    navTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetTab = tab.getAttribute('data-tab');
+            switchTab(targetTab);
+        });
+    });
+}
+
+function switchTab(targetTab) {
+    // Update active tab
+    navTabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('data-tab') === targetTab) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Update active panel
+    tabPanels.forEach(panel => {
+        panel.classList.remove('active');
+        if (panel.id === targetTab + 'Panel') {
+            panel.classList.add('active');
+        }
+    });
+    
+    // Load content for specific tabs
+    if (targetTab === 'news') {
+        loadNews();
+    } else if (targetTab === 'starred') {
+        renderStarredStocks();
+    }
+}
+
+// News Functions
+async function loadNews() {
+    if (newsContent.querySelector('.news-item')) {
+        return; // News already loaded
+    }
+    
+    showNewsLoading();
+    try {
+        // Mock news data - in production, you'd fetch from a real news API
+        const mockNews = [
+            {
+                title: "A股三大指数收盘涨跌不一，创业板指涨0.8%",
+                summary: "今日A股市场整体表现平稳，沪深两市成交量较昨日有所放大。科技股和新能源板块领涨...",
+                time: "2小时前",
+                source: "财经新闻"
+            },
+            {
+                title: "央行发布金融稳定报告，强调防范系统性风险",
+                summary: "中国人民银行今日发布《中国金融稳定报告（2024）》，重点关注房地产、地方政府债务等领域风险...",
+                time: "4小时前",
+                source: "央行官网"
+            },
+            {
+                title: "科创板公司三季报披露完毕，整体业绩向好",
+                summary: "截至目前，科创板所有上市公司均已完成三季报披露。数据显示，整体营收和净利润同比均实现增长...",
+                time: "6小时前",
+                source: "上交所"
+            },
+            {
+                title: "外资持续加仓A股，看好中国经济长期前景",
+                summary: "最新数据显示，境外资金通过沪深股通渠道持续流入A股市场，单日净买入额创近期新高...",
+                time: "8小时前",
+                source: "证券时报"
+            },
+            {
+                title: "新能源汽车产业链投资机会凸显",
+                summary: "随着政策支持力度加大和技术不断进步，新能源汽车产业链上下游企业迎来新的发展机遇...",
+                time: "昨天",
+                source: "投资快报"
+            }
+        ];
+        
+        displayNews(mockNews);
+        hideNewsLoading();
+    } catch (error) {
+        console.error('Error loading news:', error);
+        showNewsError('获取新闻失败，请稍后重试');
+        hideNewsLoading();
+    }
+}
+
+function displayNews(newsData) {
+    const newsHtml = newsData.map(item => `
+        <div class="news-item">
+            <div class="news-title">${item.title}</div>
+            <div class="news-meta">
+                <span>${item.source}</span>
+                <span>${item.time}</span>
+            </div>
+            <div class="news-summary">${item.summary}</div>
+        </div>
+    `).join('');
+    
+    newsContent.innerHTML = newsHtml;
+}
+
+function refreshNews() {
+    newsContent.innerHTML = '<div class="news-placeholder"><i class="fas fa-newspaper"></i><p>点击刷新获取最新财经新闻</p></div>';
+    loadNews();
+}
+
+function showNewsLoading() {
+    newsLoading.classList.remove('hidden');
+    newsError.classList.add('hidden');
+}
+
+function hideNewsLoading() {
+    newsLoading.classList.add('hidden');
+}
+
+function showNewsError(message) {
+    newsError.textContent = message;
+    newsError.classList.remove('hidden');
+}
+
+// Starred Stocks Functions
+function toggleStar(stockCode, stockName) {
+    const index = starredStocks.findIndex(stock => stock.code === stockCode);
+    
+    if (index > -1) {
+        // Remove from starred
+        starredStocks.splice(index, 1);
+    } else {
+        // Add to starred
+        starredStocks.push({
+            code: stockCode,
+            name: stockName || getStockName(stockCode),
+            addedAt: new Date().toISOString()
+        });
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('starredStocks', JSON.stringify(starredStocks));
+    
+    // Update UI
+    updateStarredCount();
+    renderStarredStocks();
+    updateStarButtons();
+}
+
+function isStarred(stockCode) {
+    return starredStocks.some(stock => stock.code === stockCode);
+}
+
+function updateStarredCount() {
+    starredCount.textContent = starredStocks.length;
+}
+
+function renderStarredStocks() {
+    if (starredStocks.length === 0) {
+        starredContent.innerHTML = `
+            <div class="starred-placeholder">
+                <i class="fas fa-star-o"></i>
+                <p>暂无关注的股票</p>
+                <p class="hint">在搜索结果中点击星标按钮来关注股票</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const starredHtml = starredStocks.map(stock => `
+        <div class="starred-stock">
+            <div class="stock-info">
+                <div class="stock-code">${stock.code}</div>
+                <div class="stock-name">${stock.name}</div>
+            </div>
+            <div class="stock-actions">
+                <button class="action-btn" onclick="analyzeStarredStock('${stock.code}')">
+                    <i class="fas fa-chart-line"></i> 分析
+                </button>
+                <button class="action-btn unstar-btn" onclick="toggleStar('${stock.code}')">
+                    <i class="fas fa-trash"></i> 移除
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    starredContent.innerHTML = starredHtml;
+}
+
+function analyzeStarredStock(stockCode) {
+    // Switch to search tab and analyze the stock
+    switchTab('search');
+    stockCodeInput.value = stockCode;
+    analyzeStock();
+}
+
+function clearAllStarred() {
+    if (confirm('确定要清空所有关注的股票吗？')) {
+        starredStocks = [];
+        localStorage.setItem('starredStocks', JSON.stringify(starredStocks));
+        updateStarredCount();
+        renderStarredStocks();
+        updateStarButtons();
+    }
+}
+
+function getStockName(stockCode) {
+    // Simple stock name mapping - in production, you'd fetch from API
+    const stockNames = {
+        '600519': '贵州茅台',
+        '000858': '五粮液',
+        '600036': '招商银行',
+        '000001': '平安银行',
+        '000951': '中国重汽',
+        '000739': '普洛药业',
+        '300750': '宁德时代',
+        '002594': '比亚迪'
+    };
+    return stockNames[stockCode] || '未知股票';
+}
+
+function updateStarButtons() {
+    // This would update star buttons in the search results
+    // Implementation depends on how results are displayed
 }
 
 // Utility functions
